@@ -18,6 +18,3 @@ class Browser:
     self._driver = webdriver.Chrome(executable_path=DRIVER_PATH, options=options)
     self._driver.implicitly_wait(10)
     self._driver.maximize_window()
-
-  # def get_driver(self):
-  #   return self.driver
