@@ -14,5 +14,3 @@ if __name__ == "__main__":
   scrapper = Scrapper()
   scrapper.save_pdf(full_path)
   scrapper.merge_all_pdfs(full_path)
-
-  # -comprobar el orden, debe ser el mismo, los ultimos posts seran los primeros
