@@ -9,11 +9,11 @@ class Browser:
   
   def __init__(self):
     DRIVER_PATH = "/usr/bin/chromedriver"
-    BRAVE_BROWSER_PATH = "/usr/bin/brave-browser"
+    BROWSER_PATH = "/usr/bin/google-chrome"
     options = webdriver.ChromeOptions()
-    options.binary_location = BRAVE_BROWSER_PATH
+    options.binary_location = BROWSER_PATH
     options.add_argument("--incognito")
-    # options.add_argument("--headless")#no graphic
+    options.add_argument("--headless")#no graphic
 
     self._driver = webdriver.Chrome(executable_path=DRIVER_PATH, options=options)
     self._driver.implicitly_wait(10)

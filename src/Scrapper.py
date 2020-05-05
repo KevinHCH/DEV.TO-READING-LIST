@@ -8,7 +8,6 @@ import pdfkit
 
 load_dotenv()
 
-
 class Scrapper(Browser):
   # url = "https://dev.to"
   url_login = "https://dev.to/enter"
@@ -62,10 +61,8 @@ class Scrapper(Browser):
   def get_unread_posts(self):
     first_list = list(set(self.posts_links) - set(self.get_readed_posts()))
     second_list = list(set(self.get_readed_posts()) - set(self.posts_links)) 
-    # pprint(list(set(self.posts_links) - set(self.get_readed_posts())))
-    # print(list(set(self.posts_links) - set(self.get_readed_posts())))
     return list(set(first_list) - set(second_list))
-    # return list(set(self.get_readed_posts()) - set(self.posts_links))
+    
 
   def save_pdf(self, path):
     new_posts = self.get_unread_posts() if len(self.get_unread_posts()) > 0 else self.posts_links
@@ -77,12 +74,17 @@ class Scrapper(Browser):
       self.titles.append(title)
       title = re.sub(r"\s|\\|\/","_",title)
       title = re.sub(r"\.|\'|\"","",title)
-
+      index = f"0{index}" if index < 10 else index
       pdfkit.from_url(page, f"{path}/{index}_{title}.pdf")
+    
+    #update readed post
+    print("## Updating reading list...")
+    new_read_list = list(set(self.get_unread_posts() + self.posts_links))
+    self.write_file(new_read_list)
   
   def create_index(self, full_path):
     css_path = Path(f"{Path().cwd()}/styles/style.css")
-    file_name = f"{full_path}/0_index.pdf"
+    file_name = f"{full_path}/00_index.pdf"
     today = datetime.now().strftime('%d-%m-%Y')
     render_titles = [f"<li>{title}</li>" for title in self.titles]
     html_template = f"""
@@ -119,10 +121,15 @@ class Scrapper(Browser):
     complete_name = f"{today_date}_posts"
 
     for pdf_file in sorted(path_handler.iterdir()):
+      # pprint(f"{pdf_file}")
       merger.append(f"{pdf_file}")
     
     merger.write(f"{full_path}/{complete_name}.pdf")
     merger.close()
+
+  def __exit__(self):
+    print("## Closing the browser")
+    self._driver.close()
 
 
     
